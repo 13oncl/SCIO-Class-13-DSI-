@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ทำเนียบรุ่น พสพ.13</title>
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/6/6f/Seal_of_the_Department_of_Special_Investigation.png">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,40 +18,28 @@
       .header-bg {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         color: white; padding: 30px 15px 80px; border-radius: 0 0 30px 30px;
-        position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;
+        position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       }
       .logo-img { height: 70px; width: auto; display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); margin: 0 auto 10px; }
       
       .search-wrapper { position: sticky; top: 0; z-index: 1020; padding: 10px 15px; margin-top: -60px; }
-      .search-box { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); padding: 15px; border-radius: 20px; box-shadow: 0 8px 32px rgba(31,38,135,0.15); }
-      .search-input { border-radius: 50px; padding: 12px 25px; border: 1px solid #e0e0e0; width: 100%; font-size: 1.1rem; padding-left: 45px; }
+      .search-box { max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); padding: 15px; border-radius: 20px; box-shadow: 0 8px 32px rgba(31,38,135,0.15); }
+      .search-input { border-radius: 50px; padding: 12px 25px; border: 1px solid #e0e0e0; width: 100%; font-size: 1.1rem; }
       .search-input:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 4px rgba(42,82,152,0.1); }
-      .fa-search { position: absolute; left: 30px; top: 28px; color: #aaa; }
 
       .dept-header { display: flex; align-items: center; margin: 30px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #e9ecef; }
       .dept-title { color: var(--primary-color); font-weight: 700; font-size: 1.3rem; margin-right: 10px; }
       .dept-badge { background-color: var(--secondary-color); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; }
 
-      .member-card { background: white; border-radius: 16px; padding: 20px; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; border-left: 5px solid var(--primary-color); }
+      .member-card { background: white; border-radius: 16px; padding: 20px; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
       .member-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
       .edit-icon { position: absolute; top: 15px; right: 15px; color: #ced4da; cursor: pointer; z-index: 5; }
       .edit-icon:hover { color: var(--secondary-color); transform: scale(1.1); }
 
-      .member-name { font-size: 1.15rem; font-weight: 700; color: var(--primary-color); margin-bottom: 0px; padding-right: 20px; }
-      .member-nick { display: inline-block; font-weight: 500; font-size: 0.95em; color: #555; margin-left: 5px; }
-      .member-pos { color: #6c757d; font-size: 0.9rem; margin-bottom: 10px; margin-top: 5px; }
-      
-      /* ปรับแต่งป้ายวันเกิด */
-      .bd-badge { 
-        font-size: 0.85rem; 
-        background-color: #fff3cd; 
-        color: #856404; 
-        padding: 4px 10px; 
-        border-radius: 20px; 
-        display: inline-block; 
-        margin-top: 5px; 
-        border: 1px solid #ffeeba;
-      }
+      .member-name { font-size: 1.15rem; font-weight: 700; color: var(--primary-color); margin-bottom: 2px; padding-right: 20px; }
+      .member-nick { font-weight: 400; font-size: 0.9em; color: #666; }
+      .member-pos { color: #6c757d; font-size: 0.9rem; margin-bottom: 10px; }
+      .bd-badge { font-size: 0.75rem; background-color: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 5px; }
 
       .card-footer-custom { border-top: 1px solid #f1f3f5; padding-top: 12px; display: flex; justify-content: flex-end; gap: 8px; margin-top: 15px; }
       .btn-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.2s; }
@@ -68,10 +55,10 @@
   </head>
   <body>
 
-    <div class="header-bg">
+    <div class="header-bg text-center">
       <div class="container">
         <img src="https://www.dsi.go.th/images/logo-text-dsi.png" alt="DSI Logo" class="logo-img">
-        <h3 class="fw-bold mb-0">ทำเนียบรุ่น พสพ.13</h3>
+        <h3 class="fw-bold mb-0 text-white">ทำเนียบรุ่น พสพ.13</h3>
         <small class="text-white-50">DSI - Special Case Inquiry Official - Class 13</small>
       </div>
     </div>
@@ -79,8 +66,8 @@
     <div class="search-wrapper">
       <div class="search-box">
         <div class="position-relative">
-          <i class="fas fa-search"></i>
-          <input type="text" id="searchInput" class="search-input" placeholder="ค้นหา ชื่อ, ชื่อเล่น, สังกัด..." onkeyup="filterData()">
+          <i class="fas fa-search position-absolute text-muted" style="left: 15px; top: 14px;"></i>
+          <input type="text" id="searchInput" class="search-input ps-5" placeholder="ค้นหา ชื่อ, ชื่อเล่น, หรือเบอร์โทร..." onkeyup="filterData()">
         </div>
       </div>
     </div>
@@ -119,14 +106,14 @@
                   <input type="text" class="form-control" id="position" name="position" value="พนักงานสอบสวนคดีพิเศษชำนาญการ">
                 </div>
                 <div class="col-12 col-md-6">
-                  <label class="form-label small fw-bold text-muted">สังกัด</label>
-                  <select class="form-select" id="dept" name="dept">
+                  <label class="form-label small fw-bold text-muted">สังกัด (ตัวย่อ/หน่วยงาน)</label>
+                  <select class="form-select" id="dept" name="dept" required>
                     <option value="" selected disabled>-- เลือกสังกัด --</option>
-                  </select>
+                    </select>
                 </div>
                 <div class="col-12 col-md-4">
-                    <label class="form-label small fw-bold text-muted">วันเดือนปีเกิด</label>
-                    <input type="date" class="form-control" id="birthdate" name="birthdate">
+                   <label class="form-label small fw-bold text-muted">วันเดือนปีเกิด</label>
+                   <input type="date" class="form-control" id="birthdate" name="birthdate">
                 </div>
               </div>
               <div class="bg-light p-3 rounded mt-4 border">
@@ -144,6 +131,7 @@
                 </div>
               </div>
               <div class="d-flex gap-2 mt-4 pt-2">
+                <button type="button" id="btnDelete" class="btn btn-outline-danger" onclick="deleteMember()" style="display:none;">ลบ</button>
                 <button type="submit" id="btnSave" class="btn btn-primary flex-grow-1 rounded-pill">บันทึกข้อมูล</button>
               </div>
             </form>
@@ -153,11 +141,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <script>
       let allData = [];
       let dataModal;
 
+      // รายชื่อสังกัดสำหรับ Dropdown
       const deptOptions = [
         "สำนักงานอธิบดีกรมสอบสวนคดีพิเศษ (สนง.อสพ.)",
         "สำนักงานรองอธิบดีกรมสอบสวนคดีพิเศษ (สนง.รองฯ 1)",
@@ -189,11 +177,12 @@
         "กลุ่มค่าใช้จ่ายคดีพิเศษ (กงพ.)",
         "กลุ่มตรวจสอบภายใน (กตน.)",
         "กลุ่มพัฒนาระบบบริหาร (กพร.)",
+        "สำนักงานสหวิทยาการคดีพิเศษ",
         "ศูนย์ช่วยเหลือลูกหนี้และประชาชนที่ไม่ได้รับความเป็นธรรม",
-        "กองกิจการอำนวยความยุติธรรม (กอธ.)",
-        "กองคดีการฟอกเงินทางอาญา (กคฟ.)",
-        "ส่วนคดีละเมิดทางเพศเด็ก (คด.)",
-        "กองคดียาเสพติด (กยส.)",
+        "กองกิจการอำนวยความยุติธรรม",
+        "ศูนย์ป้องกันและปราบปรามการฟอกเงินทางอาญา",
+        "ศูนย์คดีละเมิดทางเพศเด็ก",
+        "กองคดียาเสพติด",
         "ศูนย์ปฏิบัติการคดีพิเศษเขตพื้นที่ 1 (อยุธยา)",
         "ศูนย์ปฏิบัติการคดีพิเศษเขตพื้นที่ 2 (ชลบุรี)",
         "ศูนย์ปฏิบัติการคดีพิเศษเขตพื้นที่ 3 (นครราชสีมา)",
@@ -206,34 +195,24 @@
         "ศูนย์ปฏิบัติการคดีพิเศษเขตพื้นที่ 10 (ชายแดนภาคใต้)"
       ];
 
-      function safeAlert(title, text, icon) {
-          if (typeof Swal !== 'undefined') {
-              Swal.fire(title, text, icon);
-          } else {
-              alert(`${title}\n${text}`);
-          }
-      }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        fetchData();
+      window.onload = function() {
         dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
-        populateDeptDropdown();
+        populateDeptDropdown(); // สร้างตัวเลือก Dropdown
+        fetchData();
         
-        const pInput = document.getElementById('phone');
-        if(pInput){
-            pInput.addEventListener('input', function (e) {
-                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
-                e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
-            });
-        }
-      });
+        document.getElementById('phone').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+      };
 
+      // ฟังก์ชันสำหรับสร้าง Option ใน Dropdown
       function populateDeptDropdown() {
         const select = document.getElementById('dept');
-        select.innerHTML = '<option value="" selected disabled>-- เลือกสังกัด --</option>';
         deptOptions.forEach(opt => {
           const option = document.createElement('option');
-          option.value = opt; option.text = opt;
+          option.value = opt;
+          option.text = opt;
           select.appendChild(option);
         });
       }
@@ -241,30 +220,26 @@
       function fetchData() {
         document.getElementById('loader').style.display = 'block';
         document.getElementById('contentArea').innerHTML = '';
-        document.getElementById('noResults').style.display = 'none';
         
         google.script.run
-          .withSuccessHandler(function(jsonString) {
-             document.getElementById('loader').style.display = 'none';
-             try {
-                const data = JSON.parse(jsonString);
-                if (!data || data.length === 0) {
-                   document.getElementById('noResults').style.display = 'block';
-                   safeAlert('แจ้งเตือน', 'ไม่พบข้อมูลใน Sheet (กรุณาตรวจสอบชื่อ Sheet "Data")', 'warning');
-                } else {
-                   allData = data;
-                   renderData(data);
-                   checkBirthdayToday(data);
-                }
-             } catch (e) {
-                safeAlert('Error', 'เกิดข้อผิดพลาดในการแปลงข้อมูล: ' + e.message, 'error');
-             }
-          })
+          .withSuccessHandler(showData)
           .withFailureHandler(function(err){
              document.getElementById('loader').style.display = 'none';
-             safeAlert('Error', 'ไม่สามารถเชื่อมต่อ Server ได้: ' + err.message, 'error');
+             Swal.fire('Error', 'ไม่สามารถดึงข้อมูลได้: ' + err.message, 'error');
           })
           .getData();
+      }
+
+      function showData(data) {
+        allData = data.filter(r => r[0] && r[0] !== "");
+        try {
+          renderData(allData);
+          checkBirthdayToday(allData);
+        } catch(e) {
+          console.error(e);
+          Swal.fire('Error', 'เกิดข้อผิดพลาดในการแสดงผล', 'error');
+        }
+        document.getElementById('loader').style.display = 'none';
       }
 
       function renderData(data) {
@@ -295,70 +270,23 @@
           html += `<div class="dept-header"><span class="dept-title">${dept}</span><span class="dept-badge">${members.length}</span></div><div class="row g-3 mb-4">`;
 
           members.forEach(row => {
-            // ดึงข้อมูลตาม Index
-            const id = row[0];
-            const name = row[1];
-            const nickname = row[2];
-            const position = row[3];
-            const phone = row[5];
-            const line = row[6];
-            const email = row[7];
-            const birthdate = row[8];
-            const committeeRole = row[9]; // คอลัมน์ J = Index 9
-
+            const [id, name, nickname, position, d, phone, line, email, birthdate] = row;
             const displayNick = nickname ? `<span class="member-nick">(${nickname})</span>` : '';
             
-            // --- 1. สร้าง Badge คณะกรรมการ ---
-            let committeeBadge = '';
-            if (committeeRole && committeeRole.toString().trim() !== '') {
-                // เพิ่ม margin-bottom เพื่อเว้นระยะห่างจากวันเกิดเล็กน้อย
-                committeeBadge = `
-                  <div style="margin-top: 2px; margin-bottom: 6px;">
-                    <span class="badge bg-success rounded-pill" style="font-weight:500; font-size: 0.8rem;">
-                      <i class="fas fa-star me-1 text-warning"></i>${committeeRole}
-                    </span>
-                  </div>`;
-            }
-
-            // --- 2. จัดการวันเกิด ---
             let bdDisplay = '';
-            let day, month, year;
-            
-            if (birthdate) {
-                let str = birthdate.toString().trim();
-                if (str.includes('/')) {
-                    const parts = str.split('/');
-                    if (parts.length === 3) {
-                        day = parseInt(parts[0]);
-                        month = parseInt(parts[1]);
-                        year = parseInt(parts[2]);
-                    }
-                } else if (str.includes('-')) {
-                    const parts = str.split('-');
-                    if (parts.length === 3) {
-                        year = parseInt(parts[0]);
-                        month = parseInt(parts[1]);
-                        day = parseInt(parts[2]);
-                    }
+            if(birthdate) {
+                const bd = new Date(birthdate);
+                if(!isNaN(bd.getTime())) {
+                    const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+                    bdDisplay = `<div class="bd-badge"><i class="fas fa-birthday-cake me-1"></i>${bd.getDate()} ${months[bd.getMonth()]} ${bd.getFullYear()+543}</div>`;
                 }
             }
 
-            if (day && month && year) {
-                const monthsTh = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-                const yearTh = year < 2400 ? year + 543 : year;
-                bdDisplay = `<div class="bd-badge">🎂 ${day} ${monthsTh[month-1] || '-'} ${yearTh}</div>`;
-            } else if (birthdate) {
-                bdDisplay = `<div class="bd-badge">${birthdate}</div>`;
-            }
-
-            // --- 3. ปุ่มติดต่อ ---
             let btns = '';
-            const cleanPhone = phone ? phone.toString().replace(/\D/g, '') : '';
-            if(cleanPhone.length > 8) btns += `<a href="tel:${cleanPhone}" target="_top" class="btn-icon btn-phone"><i class="fas fa-phone"></i></a>`;
+            if(phone) btns += `<a href="tel:${phone}" class="btn-icon btn-phone"><i class="fas fa-phone"></i></a>`;
             if(line) btns += `<a href="https://line.me/ti/p/~${line}" target="_blank" class="btn-icon btn-line"><i class="fab fa-line"></i></a>`;
             if(email) btns += `<a href="mailto:${email}" class="btn-icon btn-email"><i class="fas fa-envelope"></i></a>`;
 
-            // --- 4. ประกอบร่าง (ย้ายตำแหน่ง Badge) ---
             html += `
               <div class="col-12 col-md-6 col-lg-4">
                 <div class="member-card">
@@ -366,7 +294,7 @@
                   <div>
                     <div class="member-name">${name} ${displayNick}</div>
                     <div class="member-pos">${position || '-'}</div>
-                    ${committeeBadge} ${bdDisplay}
+                    ${bdDisplay}
                   </div>
                   <div class="card-footer-custom">${btns || '<small class="text-muted small">ไม่มีข้อมูลติดต่อ</small>'}</div>
                 </div>
@@ -385,21 +313,8 @@
 
           data.forEach(row => {
               if (row[8]) {
-                  let d, m;
-                  let str = row[8].toString().trim();
-                  
-                  // พยายามแกะวันเดือนเกิด
-                  if (str.includes('/')) {
-                      const parts = str.split('/');
-                      d = parseInt(parts[0]);
-                      m = parseInt(parts[1]);
-                  } else if (str.includes('-')) {
-                      const parts = str.split('-');
-                      d = parseInt(parts[2]);
-                      m = parseInt(parts[1]);
-                  }
-
-                  if (d === currentDay && m === currentMonth) {
+                  const bdDate = new Date(row[8]);
+                  if (!isNaN(bdDate) && bdDate.getDate() === currentDay && (bdDate.getMonth() + 1) === currentMonth) {
                       birthdayList.push(`${row[1]} (${row[2] || '-'})`);
                   }
               }
@@ -407,7 +322,13 @@
 
           if (birthdayList.length > 0) {
               let htmlList = `<ul class="text-start mt-2">` + birthdayList.map(n => `<li>${n}</li>`).join('') + `</ul>`;
-              safeAlert('🎂 Happy Birthday!', `สุขสันต์วันเกิด<br>${htmlList}`, 'info');
+              Swal.fire({
+                  title: '🎂 Happy Birthday!',
+                  html: `สุขสันต์วันเกิด:<br>${htmlList}`,
+                  icon: 'info',
+                  confirmButtonText: 'ปิด',
+                  backdrop: `rgba(0,0,123,0.4)`
+              });
           }
       }
 
@@ -421,70 +342,45 @@
       }
 
       function openModal(id = null) {
-        // 1. ล้างค่าในฟอร์มให้สะอาดก่อน
         document.getElementById('memberForm').reset();
+        const deleteBtn = document.getElementById('btnDelete');
         
         if(id) {
-          // --- กรณีแก้ไขข้อมูล (Edit Mode) ---
           document.getElementById('modalTitle').innerText = 'แก้ไขข้อมูล';
           document.getElementById('recId').value = id;
+          deleteBtn.style.display = 'block';
 
-          // ค้นหาข้อมูลสมาชิก
           const item = allData.find(r => r[0] == id);
           if(item) {
             document.getElementById('name').value = item[1];
             document.getElementById('nickname').value = item[2];
             document.getElementById('position').value = item[3];
+            
+            // ตั้งค่า Dropdown ให้ตรงกับข้อมูลที่มี
+            // ถ้าข้อมูลเดิมในชีทไม่ตรงกับตัวเลือกใน List เป๊ะๆ (เช่น ไม่มีวงเล็บ) อาจจะเลือกไม่ได้ 
+            // แต่เมื่อกดบันทึกใหม่ จะถูกทับด้วยค่าใหม่จาก Dropdown ทันที
             document.getElementById('dept').value = item[4]; 
+            
             document.getElementById('phone').value = item[5] ? item[5].toString().replace(/'/g,'') : '';
             document.getElementById('lineId').value = item[6];
             document.getElementById('email').value = item[7];
-            
-            // ============================================================
-            // ส่วนที่แก้ไข: จัดการเรื่องวันที่ผิดเพี้ยน/สลับเดือน
-            // ============================================================
             if(item[8]) {
-                let str = item[8].toString().trim();
-                let yyyy, mm, dd;
-
-                // กรณีที่ 1: ข้อมูลมาเป็นข้อความที่มีเครื่องหมาย / (เช่น 5/4/1980)
-                // ระบบจะบังคับให้ตัวแรกเป็น "วัน" ตัวที่สองเป็น "เดือน" เสมอ (แก้ปัญหาสลับเดือน)
-                if (str.includes('/')) {
-                    const parts = str.split('/');
-                    if (parts.length === 3) {
-                        dd = parts[0].padStart(2, '0'); // เลขตัวหน้า คือ วันที่
-                        mm = parts[1].padStart(2, '0'); // เลขตัวกลาง คือ เดือน
-                        yyyy = parts[2];               // เลขตัวหลัง คือ ปี
-                    }
-                } 
-                // กรณีที่ 2: ข้อมูลมาเป็นขีด - หรือรูปแบบมาตรฐานอื่น (Date Object/ISO)
-                // (เช่น 2026-12-24T17:00... หรือ 1980-04-05)
-                else {
-                    let d = new Date(str);
-                    if (!isNaN(d.getTime())) {
-                        yyyy = d.getFullYear();
-                        mm = (d.getMonth() + 1).toString().padStart(2, '0'); // เดือนต้อง +1 เสมอใน JS
-                        dd = d.getDate().toString().padStart(2, '0');
-                    }
-                }
-
-                // นำค่าที่แกะได้ มาใส่ในช่อง Input (ต้องเรียงเป็น ปี-เดือน-วัน)
-                if (yyyy && mm && dd) {
+                const d = new Date(item[8]);
+                if(!isNaN(d)) {
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
                     document.getElementById('birthdate').value = `${yyyy}-${mm}-${dd}`;
                 }
             }
-            // ============================================================
           }
         } else {
-          // --- กรณีเพิ่มข้อมูลใหม่ (Add Mode) ---
           document.getElementById('modalTitle').innerText = 'เพิ่มสมาชิกใหม่';
           document.getElementById('recId').value = "";
-          
-          // ค่า Default
           document.getElementById('position').value = "พนักงานสอบสวนคดีพิเศษชำนาญการ";
-          document.getElementById('dept').value = "";
+          document.getElementById('dept').value = ""; // รีเซ็ต Dropdown
+          deleteBtn.style.display = 'none';
         }
-        
         dataModal.show();
       }
 
@@ -500,7 +396,7 @@
           name: form.name.value,
           nickname: form.nickname.value,
           position: form.position.value,
-          dept: form.dept.value,
+          dept: form.dept.value, // รับค่าจาก Select
           phone: form.phone.value,
           lineId: form.lineId.value,
           email: form.email.value,
@@ -510,9 +406,24 @@
         google.script.run.withSuccessHandler(res => {
           dataModal.hide();
           btn.disabled = false; btn.innerHTML = orgText;
-          safeAlert('เรียบร้อย', res, 'success');
+          Swal.fire({ icon: 'success', title: 'เรียบร้อย', text: res, timer: 1500, showConfirmButton: false });
           fetchData();
         }).saveData(formData);
+      }
+
+      function deleteMember() {
+        const id = document.getElementById('recId').value;
+        Swal.fire({
+          title: 'ยืนยันการลบ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#dc3545', confirmButtonText: 'ลบข้อมูล'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            google.script.run.withSuccessHandler(res => {
+               dataModal.hide();
+               Swal.fire('ลบสำเร็จ!', '', 'success');
+               fetchData();
+            }).deleteData(id);
+          }
+        });
       }
     </script>
   </body>
