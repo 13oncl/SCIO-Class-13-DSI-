@@ -22,64 +22,48 @@ function getData() {
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.getSheets()[0]; 
 
-  // ใช้ getDisplayValues() เพื่อดึงข้อมูลเป็น "ข้อความตามที่ตาเห็น" 
   const rows = sheet.getDataRange().getDisplayValues();
-  
   if (rows.length <= 1) return "[]"; 
-
   rows.shift(); // เอาหัวตารางออก
-
   return JSON.stringify(rows);
 }
 
-// --- ฟังก์ชันบันทึกข้อมูล (แก้ไขจุดนี้ครับ) ---
+// --- ฟังก์ชันบันทึกข้อมูล ---
 function saveData(formObject) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.getSheets()[0];
 
-  // [จุดที่แก้ไข]: ไม่ใช้ new Date() แต่แปลงเป็น String "dd/mm/yyyy" แทน
-  // เพื่อป้องกัน Timezone ทำให้วันที่ลดลง 1 วัน
   let birthDateVal = "";
   if (formObject.birthdate) {
-    // input ส่งมาเป็น yyyy-mm-dd (เช่น 2024-12-25)
     const parts = formObject.birthdate.split('-'); 
     if (parts.length === 3) {
-       // เรียงใหม่เป็น 25/12/2024
        birthDateVal = `${parts[2]}/${parts[1]}/${parts[0]}`; 
     }
   }
 
-  // เตรียมข้อมูลสำหรับบันทึก (Array 1 มิติ)
-  // เรียงตาม: [ID, ชื่อ, ชื่อเล่น, ตำแหน่ง, สังกัด, เบอร์, Line, Email, วันเกิด]
-  // หมายเหตุ: โค้ดเดิมของคุณบันทึกเริ่มที่ Column 2 (ชื่อ) ดังนั้น Array ที่เตรียมต้องเริ่มที่ชื่อ
   const dataRow = [
       formObject.name,
       formObject.nickname,
       formObject.position,
       formObject.dept,
-      "'" + formObject.phone, // ใส่ ' กันเบอร์เพี้ยน
+      "'" + formObject.phone,
       formObject.lineId,
       formObject.email,
-      birthDateVal // ค่าวันที่แบบ String
+      birthDateVal
   ];
 
   if (formObject.recId && formObject.recId !== "") {
-    // --- กรณีแก้ไขข้อมูลเดิม ---
     const data = sheet.getDataRange().getValues(); 
-    // วนลูปหา ID (Col 1 คือ Index 0)
     for (let i = 0; i < data.length; i++) {
       if (data[i][0].toString() == formObject.recId.toString()) {
         const rowNum = i + 1;
-        // บันทึกทับช่วง Col 2 ถึง Col 9 (รวม 8 คอลัมน์)
         sheet.getRange(rowNum, 2, 1, 8).setValues([dataRow]);
         break;
       }
     }
   } else {
-    // --- กรณีเพิ่มข้อมูลใหม่ ---
     const newId = new Date().getTime().toString();
-    // เพิ่ม ID ไว้ตัวแรกสุดของ Array
     const newRow = [newId, ...dataRow]; 
     sheet.appendRow(newRow);
   }
@@ -135,24 +119,18 @@ function checkAndSendBirthday() {
     let bDay = 0;
     let bMonth = 0;
 
-    // รองรับทั้ง Date Object และ String
     if (birthDateRaw instanceof Date) {
       let dateString = Utilities.formatDate(birthDateRaw, "Asia/Bangkok", "d/M");
       let parts = dateString.split('/');
       bDay = parseInt(parts[0]);
       bMonth = parseInt(parts[1]);
     } else {
-      // พยายามแกะจาก String
       let strDate = String(birthDateRaw).split('T')[0];
-      
       if (strDate.includes('/')) {
-         // กรณีเก็บเป็น 25/12/1980 (แบบที่เราแก้ใหม่)
          let parts = strDate.split('/');
-         // ถ้าเป็น d/m/y
          bDay = parseInt(parts[0]);
          bMonth = parseInt(parts[1]);
       } else if (strDate.includes('-')) {
-         // กรณีเก็บเป็น 1980-12-25
          let parts = strDate.split('-');
          bDay = parseInt(parts[2]);
          bMonth = parseInt(parts[1]);
@@ -173,62 +151,50 @@ function checkAndSendBirthday() {
 }
 
 function sendGroupPushMessage(names) {
-  // 1. ตรวจสอบรายชื่อว่ามีหรือไม่
   if (!names || names.length === 0) return;
 
-  // 2. เตรียมรายชื่อกลุ่มเป้าหมาย (Target Groups)
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheetConfig = ss.getSheetByName("Config"); // พยายามหา Sheet Config
-  let targetGroups = [];
+  let sheetConfig = ss.getSheetByName("Config"); 
+  let targetGroupsRaw = [];
 
+  // ดึง ID กลุ่มทั้งหมดจาก Sheet "Config"
   if (sheetConfig) {
-    // ถ้ามี Sheet Config ให้ดึง ID จากคอลัมน์แรก (ไม่เอาหัวตาราง)
     const rows = sheetConfig.getDataRange().getValues();
     for (let i = 1; i < rows.length; i++) {
       let gid = rows[i][0];
       if (gid && gid.toString().trim() !== "") {
-        targetGroups.push(gid.toString().trim());
+        targetGroupsRaw.push(gid.toString().trim());
       }
     }
   }
 
-  // [Fallback] ถ้าใน Sheet Config ไม่มีข้อมูลเลย หรือหา Sheet ไม่เจอ
-  // ให้กลับไปใช้ค่าคงที่ GROUP_ID_TARGET เดิมที่ตั้งไว้บนสุดของไฟล์
-  if (targetGroups.length === 0 && typeof GROUP_ID_TARGET !== 'undefined' && GROUP_ID_TARGET !== "") {
-     targetGroups.push(GROUP_ID_TARGET);
+  if (targetGroupsRaw.length === 0 && typeof GROUP_ID_TARGET !== 'undefined' && GROUP_ID_TARGET !== "") {
+     targetGroupsRaw.push(GROUP_ID_TARGET);
   }
 
-  // ถ้าสุดท้ายยังไม่มี ID กลุ่มเลย ให้จบการทำงาน
-  if (targetGroups.length === 0) {
-    console.log("ไม่พบ Group ID สำหรับส่งข้อความ (กรุณาเช็ค Sheet Config หรือตัวแปร GROUP_ID_TARGET)");
+  if (targetGroupsRaw.length === 0) {
+    console.log("ไม่พบ Group ID สำหรับส่งข้อความ");
     return;
   }
 
-  // 3. ปรับรูปแบบวันที่
+  // กรอง Group ID ที่ซ้ำกันออก เผื่อมีการบันทึกซ้ำ
+  const targetGroups = [...new Set(targetGroupsRaw)];
+
   const today = new Date().toLocaleDateString('th-TH', {
-    day: 'numeric',
-    month: 'long', 
-    year: 'numeric'
+    day: 'numeric', month: 'long', year: 'numeric'
   });
 
-  // 4. สร้างลิสต์รายชื่อ
   const nameList = names.map(name => `✨ ${name}`).join('\n');
+  const messageText = `🎂 Happy Birthday! 🎂 ท่านสมาชิก พสพ.13 ประจำวันที่ ${today}\n\n${nameList}\n\n🙏 ขออาราธนาคุณพระศรีรัตนตรัย โปรดดลบันดาลให้ท่านมีความสุข 💖 สุขภาพแข็งแรง 💪 คิดสิ่งใดสมปรารถนา 🌟 การงานก้าวหน้า 📈 ร่ำรวยเงินทอง 💰 และประสบความสำเร็จยิ่งๆ ขึ้นไป 🎉`;
 
-  // 5. ประกอบข้อความ (ตามที่ขอมาล่าสุด)
-  const messageText = `🎂 Happy Birthday! 🎂 ท่านสมาชิก พสพ.13 ประจำวันที่ ${today}
-
-${nameList}
-
-🎁🙏 ขออาราธนาคุณพระศรีรัตนตรัย โปรดดลบันดาลให้ท่านมีความสุข 💖😊🥰 สุขภาพแข็งแรง 💪🌿🏃‍♂️ คิดสิ่งใดสมปรารถนา 💫🌟🔮 การงานก้าวหน้า 📈💼 ร่ำรวยเงินทอง 💸💰💎 และประสบความสำเร็จยิ่งๆ ขึ้นไป 🎉🥂🌈`;
-
-  // 6. ส่งข้อความด้วย Push API (ต้องวนลูปส่งทีละกลุ่ม/คน แทน Multicast)
   let successCount = 0;
 
+  // วนลูปส่งทีละกลุ่ม พร้อมตั้งเวลาหน่วง (Delay) ป้องกัน LINE API บล็อก
   for (let i = 0; i < targetGroups.length; i++) {
     let targetId = targetGroups[i];
 
     const payload = {
-      'to': targetId, // ส่งหา ID ทีละตัว (เป็น String ไม่ใช่ Array)
+      'to': targetId, 
       'messages': [{ 'type': 'text', 'text': messageText }]
     };
 
@@ -239,22 +205,25 @@ ${nameList}
         'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN
       },
       'payload': JSON.stringify(payload),
-      'muteHttpExceptions': true // เพิ่มบรรทัดนี้เพื่อไม่ให้ Script พังและสามารถดึง Error Message มาดูได้
+      'muteHttpExceptions': true 
     };
 
     try {
-      // เปลี่ยนจาก /multicast เป็น /push
       let response = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', options);
       let responseCode = response.getResponseCode();
       
       if (responseCode === 200) {
          successCount++;
+         console.log(`ส่งวันเกิดสำเร็จ -> ID กลุ่ม: ${targetId}`);
       } else {
          console.log(`ส่งพลาด ID: ${targetId} | โค้ด: ${responseCode} | สาเหตุ: ${response.getContentText()}`);
       }
     } catch (e) {
       console.log(`เกิดข้อผิดพลาดในการส่ง LINE (Push) หา ${targetId}: ${e}`);
     }
+
+    // *** เพิ่มระบบหน่วงเวลา 1 วินาที (1000 ms) ก่อนส่งกลุ่มต่อไป ป้องกัน Rate Limit ***
+    Utilities.sleep(1000); 
   }
 
   console.log(`กระบวนการเสร็จสิ้น: ส่งสำเร็จ ${successCount}/${targetGroups.length} ปลายทาง`);
@@ -275,10 +244,12 @@ function doPost(e) {
     for (var i = 0; i < events.length; i++) {
       var event = events[i];
       
-      // === [ส่วนที่เพิ่ม] เช็คว่าเป็นกลุ่มไหม ถ้าใช่ให้บันทึก ===
+      // === เช็คว่าเป็นกลุ่มไหม ถ้าใช่ให้บันทึก (แก้ไขให้ทำงานชัวร์ขึ้น) ===
       if (event.source.type === "group" || event.source.type === "room") {
          var groupId = event.source.groupId || event.source.roomId;
-         saveGroupIdToSheet(groupId); // เรียกฟังก์ชันบันทึก
+         if (groupId) {
+             saveGroupIdToSheet(groupId);
+         }
       }
       // ===============================================
 
@@ -295,22 +266,17 @@ function handleMessage(event) {
   const userMsg = event.message.text.trim();
   const replyToken = event.replyToken;
 
-  // 1. คำสั่งจาก Rich Menu 
   if (userMsg === 'วิธีค้นหาเพื่อน') {
     const helpText = `📌 วิธีค้นหาข้อมูลทำเนียบรุ่น\n\nกรุณาพิมพ์คำว่า "พสพ " (มีเว้นวรรค 1 ครั้ง) แล้วตามด้วยชื่อ, ชื่อเล่น, หรือสังกัดที่ต้องการค้นหา \n\n💡 ตัวอย่างการค้นหา:\nพสพ สมชาย\nพสพ เทคโน\nพสพ นก`;
     replyText(replyToken, helpText);
     return;
   }
 
-  // ==========================================
-  // [เพิ่มใหม่] 2. คำสั่งสุ่มผู้โชคดี (Lucky Draw)
-  // ==========================================
   if (userMsg === 'สุ่ม' || userMsg === 'สุ่มชื่อ') {
     randomLuckyDraw(replyToken);
     return;
   }
 
-  // 3. คำสั่งค้นหารายชื่อของจริง (ของเดิม)
   if (userMsg.startsWith('พสพ ')) {
     const keyword = userMsg.substring(4).trim(); 
     if (keyword.length === 0) return;
@@ -349,7 +315,6 @@ function searchMemberForBot(keyword) {
   if (!sheet) sheet = ss.getSheets()[0];
   
   const data = sheet.getDataRange().getDisplayValues(); 
-  
   const searchKey = keyword.toString().toLowerCase().trim(); 
   const searchKeyDigits = searchKey.replace(/\D/g, ''); 
 
@@ -373,23 +338,10 @@ function searchMemberForBot(keyword) {
 
     let matchPriority = 99;
 
-    // 1. ตรงกับ "ชื่อเล่น"
-    if (lowerNick.includes(searchKey)) {
-      matchPriority = 1;
-    }
-    // 2. ตรงกับ "ชื่อจริง"
-    else if (lowerName.startsWith(searchKey)) {
-      matchPriority = 2;
-    }
-    // 3. ตรงกับ "ส่วนใดส่วนหนึ่งของชื่อ"
-    else if (lowerName.includes(searchKey)) {
-      matchPriority = 3;
-    }
-    // 4. ตรงกับ "สังกัด/แผนก"
-    else if (lowerDept.includes(searchKey)) {
-      matchPriority = 4;
-    }
-    // 5. ตรงกับอื่นๆ
+    if (lowerNick.includes(searchKey)) matchPriority = 1;
+    else if (lowerName.startsWith(searchKey)) matchPriority = 2;
+    else if (lowerName.includes(searchKey)) matchPriority = 3;
+    else if (lowerDept.includes(searchKey)) matchPriority = 4;
     else if (
       lineId.toLowerCase().includes(searchKey) || 
       email.toLowerCase().includes(searchKey) || 
@@ -400,31 +352,20 @@ function searchMemberForBot(keyword) {
 
     if (matchPriority !== 99) {
       foundMembers.push({
-        name: fullName,
-        nickname: nickName,
-        position: position,
-        dept: dept,
-        phone: phone,
-        line: lineId,
-        email: email,
-        _priority: matchPriority 
+        name: fullName, nickname: nickName, position: position,
+        dept: dept, phone: phone, line: lineId, email: email, _priority: matchPriority 
       });
     }
   }
 
-  foundMembers.sort((a, b) => {
-    return a._priority - b._priority;
-  });
-
+  foundMembers.sort((a, b) => a._priority - b._priority);
   return foundMembers.length > 0 ? foundMembers : null;
 }
 
 // ฟังก์ชัน Flex Message
 function replyFlexMessage(replyToken, members) {
   let webAppUrl = "https://script.google.com";
-  try {
-    webAppUrl = ScriptApp.getService().getUrl();
-  } catch (e) { /* ข้าม */ }
+  try { webAppUrl = ScriptApp.getService().getUrl(); } catch (e) {}
 
   const displayMembers = members.slice(0, 10); 
 
@@ -440,46 +381,32 @@ function replyFlexMessage(replyToken, members) {
 
     let footerContents = [];
 
-    // 1. ปุ่มโทร
     if (cleanPhone.length >= 9) {
        footerContents.push({
-           "type": "button",
-           "style": "primary",
-           "height": "sm",
+           "type": "button", "style": "primary", "height": "sm",
            "action": { "type": "uri", "label": "📞 โทร", "uri": "tel:" + cleanPhone },
            "color": "#2a5298"
        });
     }
-
-    // 2. ปุ่มไลน์
     if (lineId !== "" && lineId !== "-") {
        footerContents.push({
-             "type": "button",
-             "style": "secondary",
-             "height": "sm",
+             "type": "button", "style": "secondary", "height": "sm",
              "action": { "type": "uri", "label": "💬 แชท LINE", "uri": "https://line.me/ti/p/~" + lineId }
        });
     }
-
-    // 3. ปุ่ม Web App
     footerContents.push({
-         "type": "button",
-         "style": "link",
-         "height": "sm",
+         "type": "button", "style": "link", "height": "sm",
          "action": { "type": "uri", "label": "🌐 ดู/แก้ไข ทำเนียบ (Web)", "uri": webAppUrl }
     });
 
     return {
       "type": "bubble",
       "header": {
-        "type": "box",
-        "layout": "vertical",
-        "contents": [ { "type": "text", "text": "ผลการค้นหา", "color": "#ffffff", "weight": "bold" } ],
-        "backgroundColor": "#1e3c72"
+        "type": "box", "layout": "vertical", "backgroundColor": "#1e3c72",
+        "contents": [ { "type": "text", "text": "ผลการค้นหา", "color": "#ffffff", "weight": "bold" } ]
       },
       "body": {
-        "type": "box",
-        "layout": "vertical",
+        "type": "box", "layout": "vertical",
         "contents": [
           { "type": "text", "text": safeName, "weight": "bold", "size": "lg", "color": "#1e3c72", "wrap": true },
           { "type": "text", "text": "ชื่อเล่น: " + safeNick, "size": "sm", "color": "#555555", "margin": "xs" },
@@ -500,42 +427,21 @@ function replyFlexMessage(replyToken, members) {
           ]}
         ]
       },
-      "footer": {
-        "type": "box",
-        "layout": "vertical",
-        "spacing": "sm",
-        "contents": footerContents
-      }
+      "footer": { "type": "box", "layout": "vertical", "spacing": "sm", "contents": footerContents }
     };
   });
 
   const payload = {
     "replyToken": replyToken,
-    "messages": [{
-      "type": "flex",
-      "altText": "ผลการค้นหาข้อมูลสมาชิก พสพ.13",
-      "contents": {
-        "type": "carousel",
-        "contents": bubbles
-      }
-    }]
+    "messages": [{ "type": "flex", "altText": "ผลการค้นหาข้อมูลสมาชิก พสพ.13", "contents": { "type": "carousel", "contents": bubbles } }]
   };
   
   const options = {
-    'method': 'post',
-    'headers': {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN
-    },
-    'payload': JSON.stringify(payload),
-    'muteHttpExceptions': true
+    'method': 'post', 'headers': { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN },
+    'payload': JSON.stringify(payload), 'muteHttpExceptions': true
   };
 
-  try {
-      UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', options);
-  } catch (e) {
-      console.log("Script Error sending flex: " + e);
-  }
+  try { UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', options); } catch (e) { console.log(e); }
 }
 
 // --- ฟังก์ชันบันทึก Group ID อัตโนมัติ ---
@@ -551,7 +457,8 @@ function saveGroupIdToSheet(groupId) {
   let exists = false;
   
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0] == groupId) {
+    // ใช้ trim() เผื่อมีช่องว่างติดมา
+    if (data[i][0] && data[i][0].toString().trim() === groupId.toString().trim()) {
       exists = true;
       break;
     }
@@ -574,7 +481,6 @@ function randomLuckyDraw(replyToken) {
   
   const data = sheet.getDataRange().getDisplayValues(); 
   
-  // กรองเอารายชื่อที่มีอยู่จริง (ข้ามแถวแรกที่เป็นหัวตาราง และแถวที่ไม่มีชื่อ)
   let validMembers = [];
   for (let i = 1; i < data.length; i++) {
     let name = data[i][1];
@@ -583,17 +489,14 @@ function randomLuckyDraw(replyToken) {
     }
   }
 
-  // ถ้าไม่มีข้อมูลเลย
   if (validMembers.length === 0) {
     replyText(replyToken, "ยังไม่มีรายชื่อสมาชิกในระบบครับ");
     return;
   }
 
-  // สุ่มตัวเลข Index จาก Array
   const randomIndex = Math.floor(Math.random() * validMembers.length);
   const winner = validMembers[randomIndex];
 
-  // ดึงข้อมูลผู้ชนะ
   const winnerData = {
     name: winner[1],
     nickname: winner[2] ? winner[2] : '-',
@@ -601,7 +504,6 @@ function randomLuckyDraw(replyToken) {
     dept: winner[4] ? winner[4] : 'ไม่ระบุสังกัด'
   };
 
-  // ส่งผลลัพธ์เป็น Flex Message แจ้งผู้โชคดี
   replyLuckyDrawFlex(replyToken, winnerData);
 }
 
@@ -610,32 +512,22 @@ function replyLuckyDrawFlex(replyToken, data) {
   const payload = {
     "replyToken": replyToken,
     "messages": [{
-      "type": "flex",
-      "altText": "🎉 ประกาศรายชื่อผู้โชคดี!",
+      "type": "flex", "altText": "🎉 ประกาศรายชื่อผู้โชคดี!",
       "contents": {
-        "type": "bubble",
-        "size": "mega",
+        "type": "bubble", "size": "mega",
         "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            { "type": "text", "text": "🎉 สมาชิกผู้โชคดี คือ 🎉", "color": "#ffffff", "weight": "bold", "size": "xl", "align": "center" }
-          ],
-          "backgroundColor": "#FFC107" // สีทองเหลือง
+          "type": "box", "layout": "vertical", "backgroundColor": "#FFC107",
+          "contents": [ { "type": "text", "text": "🎉 สมาชิกผู้โชคดี คือ 🎉", "color": "#ffffff", "weight": "bold", "size": "xl", "align": "center" } ]
         },
         "body": {
-          "type": "box",
-          "layout": "vertical",
+          "type": "box", "layout": "vertical",
           "contents": [
             { "type": "text", "text": "🎯", "size": "3xl", "align": "center", "margin": "md" },
             { "type": "text", "text": data.name, "weight": "bold", "size": "xxl", "align": "center", "color": "#1e3c72", "wrap": true, "margin": "md" },
             { "type": "text", "text": "(" + data.nickname + ")", "size": "md", "align": "center", "color": "#555555", "margin": "sm" },
             { "type": "separator", "margin": "xl" },
             {
-              "type": "box",
-              "layout": "vertical",
-              "margin": "lg",
-              "spacing": "sm",
+              "type": "box", "layout": "vertical", "margin": "lg", "spacing": "sm",
               "contents": [
                 {
                   "type": "box", "layout": "baseline",
@@ -649,11 +541,8 @@ function replyLuckyDrawFlex(replyToken, data) {
           ]
         },
         "footer": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            { "type": "text", "text": "ยินดีด้วยครับ! 🥳", "align": "center", "color": "#aaaaaa", "size": "sm" }
-          ]
+          "type": "box", "layout": "vertical",
+          "contents": [ { "type": "text", "text": "ยินดีด้วยครับ! 🥳", "align": "center", "color": "#aaaaaa", "size": "sm" } ]
         },
         "styles": { "header": { "backgroundColor": "#ffb300" } }
       }
@@ -661,17 +550,9 @@ function replyLuckyDrawFlex(replyToken, data) {
   };
   
   const options = {
-    'method': 'post',
-    'headers': {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN
-    },
+    'method': 'post', 'headers': { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CHANNEL_ACCESS_TOKEN },
     'payload': JSON.stringify(payload)
   };
 
-  try {
-      UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', options);
-  } catch (e) {
-      console.log("Error sending Lucky Draw Flex: " + e);
-  }
+  try { UrlFetchApp.fetch('https://api.line.me/v2/bot/message/reply', options); } catch (e) { console.log(e); }
 }
